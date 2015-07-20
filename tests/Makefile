@@ -14,4 +14,4 @@ gtest.out: tests.cpp ../include/spsc_queue.h
 	$(CXX) $(CXXFLAGS) $(CXXINC) $(GTESTINC) -o $@ $(GTESTSRC) $<
 
 clean:
-	rm -rf *.out
+	rm -rf *.out *.dSYM
