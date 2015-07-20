@@ -16,11 +16,11 @@ The key concept I wanted to explore in this implementation was the idea
 of 'ownership transfer'.  In other words, I wanted to make it clear in the API
 that the thread writing messages to the queue relinquished responsibility for
 destroying the messages to the thread reading messages from the queue.  This is
-done by using `unique_ptr`s to pass messages.  If you are not familiar with
-rvalues and `std::move()` then I suggest reading up on them before using this
+done by using `std::unique_ptr`s to pass messages.  If you are not familiar with
+rvalues and `std::move` then I suggest reading up on them before using this
 code.
 
-Herb Sutter has written a nice blog post on the subject of using `unique_ptr`s 
+Herb Sutter has written a nice blog post on the subject of using smart pointers 
 as parameters [here](http://herbsutter.com/2013/06/05/gotw-91-solution-smart-pointer-parameters/).
 
 ## Example
