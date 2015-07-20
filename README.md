@@ -7,7 +7,7 @@ not designed to be very performant or scalable, you have been warned!  If you
 are interested in performant thread-safe queues take a look at:
 
  * [Intel TBB](https://www.threadingbuildingblocks.org/docs/help/reference/containers_overview/concurrent_queue_cls.htm)
- * [Folly ProducerConsumerQueue](https://www.threadingbuildingblocks.org/docs/help/reference/containers_overview/concurrent_queue_cls.htm)
+ * [Folly ProducerConsumerQueue](https://github.com/facebook/folly/blob/master/folly/ProducerConsumerQueue.h)
  * [Boost SPSC Queue](http://www.boost.org/doc/libs/1_58_0/doc/html/boost/lockfree/spsc_queue.html)
 
 ## Ownership transfer
