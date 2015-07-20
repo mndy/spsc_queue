@@ -1,19 +1,18 @@
-#Thread-safe queue implementation in C++
+# Thread-safe queue implementation in C++
 
 This is a simple header-only single-producer single-consumer queue
-implementation written in C++11.  It is not designed to be very performant or
-scalable, you have been warned!  If you are interested in performant thread-safe
-queues take a look at:
+implementation written in C++11.  It is designed to explicitly transfer
+ownership of dynamically allocated objects from one thread to another.  It is
+not designed to be very performant or scalable, you have been warned!  If you
+are interested in performant thread-safe queues take a look at:
 
  * [Intel TBB](https://www.threadingbuildingblocks.org/docs/help/reference/containers_overview/concurrent_queue_cls.htm)
  * [Folly ProducerConsumerQueue](https://www.threadingbuildingblocks.org/docs/help/reference/containers_overview/concurrent_queue_cls.htm)
  * [Boost SPSC Queue](http://www.boost.org/doc/libs/1_58_0/doc/html/boost/lockfree/spsc_queue.html)
 
-This queue would be more scalable if the buffer was made fixed size.
+## Ownership transfer
 
-##Ownership transfer
-
-The key concepts I wanted to explore in this implementation was the idea
+The key concept I wanted to explore in this implementation was the idea
 of 'ownership transfer'.  In other words, I wanted to make it clear in the API
 that the thread writing messages to the queue relinquished responsibility for
 destroying the messages to the thread reading messages from the queue.  This is
@@ -24,7 +23,7 @@ code.
 Herb Sutter has written a nice blog post on the subject of using `unique_ptr`s 
 as parameters [here](http://herbsutter.com/2013/06/05/gotw-91-solution-smart-pointer-parameters/).
 
-##Example
+## Example
 
 ```cpp
 // Construct a queue - note that we can't perform operations on it directly - we
