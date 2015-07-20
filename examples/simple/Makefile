@@ -7,8 +7,8 @@ CXXINC    = -I../../include
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) $(CXXINC) -c -o $@ $<
 
-simple: main.o
+simple.out: main.o
 	$(CXX) $(CXXFLAGS) $(CXXINC) -o $@ $^
 
 clean:
-	rm -f *.o simple
+	rm -f *.o *.out
