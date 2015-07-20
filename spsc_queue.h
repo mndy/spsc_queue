@@ -44,7 +44,7 @@ struct spsc_reader_exists: public std::runtime_error {
 	spsc_reader_exists():
 		std::runtime_error("cannot create reader for queue: one already exists")
 	{}
-}
+};
 
 // Exception thrown if a writer has already been created for a queue.
 //
@@ -52,7 +52,7 @@ struct spsc_writer_exists: public std::runtime_error {
 	spsc_writer_exists():
 		std::runtime_error("cannot create writer for queue: one already exists")
 	{}
-}
+};
 
 // A single-producer single-consumer thread safe queue.
 //
@@ -84,7 +84,7 @@ class spsc_writer {
 public:
 	spsc_writer(spsc_queue<T>&);
 	virtual ~spsc_writer() { close(); }
-	void push(std::unique_ptr<T>);
+	bool push(std::unique_ptr<T>);
 	void close();
 };
 
@@ -95,11 +95,9 @@ class spsc_queue {
 	std::mutex mutex_;
 	std::condition_variable cv_;
 	std::queue<std::unique_ptr<T>> unsafe_q_;
-	bool closed_;
-	bool r_exists_;
-	bool w_exists_;
+	bool closed_, r_exists_, w_exists_;
 public:
-	spsc_queue(): closed_(false), reader_exists_(false), writer_exists_(false) {}
+	spsc_queue(): closed_(false), r_exists_(false), w_exists_(false) {}
 };
 
 // Construct a spsc_reader for the given spsc_queue.
