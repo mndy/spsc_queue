@@ -1,4 +1,4 @@
-#Single-producer single-consumer queue implementation in C++
+#Thread-safe queue implementation in C++
 
 This is a simple header-only single-producer single-consumer queue
 implementation written in C++11.  It is not designed to be very performant or
@@ -13,7 +13,7 @@ This queue would be more scalable if the buffer was made fixed size.
 
 ##Ownership transfer
 
-One of the key concepts I wanted to explore in this implementation was the idea
+The key concepts I wanted to explore in this implementation was the idea
 of 'ownership transfer'.  In other words, I wanted to make it clear in the API
 that the thread writing messages to the queue relinquished responsibility for
 destroying the messages to the thread reading messages from the queue.  This is
@@ -24,12 +24,16 @@ code.
 ##Example
 
 ```
+// Construct a queue - note that we can't perform operations on it directly - we
+// need either a spsc_reader or spsc_writer object
 spsc_queue<int> q;
 
 // Send [0, 9] over the queue
 thread producer([&q]() {
+	// Create a spsc_writer so we can write messages into the spsc_queue
 	spsc_writer<int> w(q);
-	for (int i = 0; i < num_msgs; i++) {
+	for (int i = 0; i < 10; i++) {
+		// Create a unique_ptr<int> rvalue and move it into the queue
 		w.push(unique_ptr<int>(new int(i)));
 	}
 });
@@ -40,17 +44,23 @@ thread producer([&q]() {
 // ...
 // 8
 // 9
-thread consumer([&q, &msgs_rcvd]() {
+thread consumer([&q]() {
+	// Create a spsc_reader so we can read messages from the spsc_queue
 	spsc_reader<int> r(q);
 	while(true) {
 		unique_ptr<int> ptr;
+		
+		// Pointer is moved from the queue into ptr
 		bool valid = r.pop(ptr);
 		if (valid) {
+			// Dereference pointer to print - should check first for nullptr if
+			// the producer might send one
 			cout << *ptr << endl;
 		} else {
+			// Queue has been closed by the writer - exit thread
 			return;
 		}
-	}
+	} // ptr is destroyed when it goes out of scope
 });
 
 producer.join();
