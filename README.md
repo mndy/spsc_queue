@@ -36,6 +36,7 @@ thread producer([&q]() {
 		// Create a unique_ptr<int> rvalue and move it into the queue
 		w.push(unique_ptr<int>(new int(i)));
 	}
+	// spsc_writer closes the queue as it goes out of scope
 });
 
 // Print integers received from the queue.  The output will be:
