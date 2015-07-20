@@ -23,7 +23,7 @@ code.
 
 ##Example
 
-```
+```cpp
 // Construct a queue - note that we can't perform operations on it directly - we
 // need either a spsc_reader or spsc_writer object
 spsc_queue<int> q;
