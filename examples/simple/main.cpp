@@ -21,13 +21,12 @@ int main(int argc, char** argv) {
 	thread consumer([&q]() {
 		spsc_reader<int> r(q);
 		while(true) {
-			spsc_msg<int> msg = r.pop();
-			if (msg.is_valid()) {
-				cout << *msg.move_ptr() << endl;
-			} else if (msg.is_closed()) {
-				return;
+			unique_ptr<int> ptr;
+			bool valid = r.pop(ptr);
+			if (valid) {
+				cout << *ptr << endl;
 			} else {
-				continue;
+				return;
 			}
 		}
 	});

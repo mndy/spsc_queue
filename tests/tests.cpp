@@ -1,4 +1,4 @@
-#include "spsc_queue.h"
+#include <spsc_queue.h>
 
 #include "gtest/gtest.h"
 
