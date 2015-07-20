@@ -21,6 +21,9 @@ done by using `unique_ptr`s to pass messages.  If you are not familiar with
 rvalues and `std::move()` then I suggest reading up on them before using this
 code.
 
+Herb Sutter has written a nice blog post on the subject of using `unique_ptr`s 
+as parameters [here](http://herbsutter.com/2013/06/05/gotw-91-solution-smart-pointer-parameters/).
+
 ##Example
 
 ```cpp
