@@ -61,3 +61,29 @@ TEST(SpscQueueTest, SimpleTwoThread) {
 
 	ASSERT_EQ(msgs_rcvd.load(), num_msgs);
 }
+
+TEST(SpscQueueTest, TwoReaderError) {
+	bool exception_thrown = false;
+	try {
+		spsc_queue<int> q;
+		spsc_reader<int> r1(q);
+		spsc_reader<int> r2(q);
+	} catch (spsc_reader_exists e) {
+		exception_thrown = true;	
+	}
+
+	ASSERT_TRUE(exception_thrown);
+}
+
+TEST(SpscQueueTest, TwoWriterError) {
+	bool exception_thrown = false;
+	try {
+		spsc_queue<int> q;
+		spsc_writer<int> w1(q);
+		spsc_writer<int> w2(q);
+	} catch (spsc_writer_exists e) {
+		exception_thrown = true;	
+	}
+
+	ASSERT_TRUE(exception_thrown);
+}
