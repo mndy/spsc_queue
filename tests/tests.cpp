@@ -68,7 +68,7 @@ TEST(SpscQueueTest, TwoReaderError) {
 		spsc_queue<int> q;
 		spsc_reader<int> r1(q);
 		spsc_reader<int> r2(q);
-	} catch (spsc_reader_exists e) {
+	} catch (const spsc_reader_exists& e) {
 		exception_thrown = true;	
 	}
 
@@ -81,7 +81,7 @@ TEST(SpscQueueTest, TwoWriterError) {
 		spsc_queue<int> q;
 		spsc_writer<int> w1(q);
 		spsc_writer<int> w2(q);
-	} catch (spsc_writer_exists e) {
+	} catch (const spsc_writer_exists& e) {
 		exception_thrown = true;	
 	}
 
