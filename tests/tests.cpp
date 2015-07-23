@@ -87,3 +87,26 @@ TEST(SpscQueueTest, TwoWriterError) {
 
 	ASSERT_TRUE(exception_thrown);
 }
+
+TEST(SpscQueueTest, EarlyDestruction) {
+	class destruct_count {
+		atomic<int>& count_;
+	public:
+		destruct_count(atomic<int>& count): count_(count) {}
+		~destruct_count() { count_++; }
+	};
+
+	atomic<int> destructs_called(0);
+	{
+		spsc_queue<destruct_count> q;
+		spsc_writer<destruct_count> w(q);
+
+		for (int i = 0; i < 100; i++) {
+			w.push(unique_ptr<destruct_count>(
+				new destruct_count(destructs_called))
+			);
+		}
+	}
+	ASSERT_EQ(destructs_called, 100);
+}
+
