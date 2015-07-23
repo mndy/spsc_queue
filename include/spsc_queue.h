@@ -63,8 +63,9 @@ template<typename T>
 class spsc_queue;
 
 
-// 
+// Reader for an spsc_queue supporting pop (a.k.a. dequeue) operations.
 //
+// There may be only one spsc_reader created per spsc_queue.
 template<typename T>
 class spsc_reader {
 	spsc_queue<T>& q_;
@@ -72,12 +73,12 @@ class spsc_reader {
 public:
 	spsc_reader(spsc_queue<T>&);
 	virtual ~spsc_reader() {};
-	std::unique_ptr<T> value();
 	bool pop(std::unique_ptr<T>& ptr);
 };
 
+// Writer for an spsc_queue supporting push (a.k.a. enqueue) operations.
 //
-//
+// There may be only one spsc_writer created per spsc_queue.
 template<typename T>
 class spsc_writer {
 	spsc_queue<T>& q_;
