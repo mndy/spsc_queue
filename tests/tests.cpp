@@ -110,3 +110,41 @@ TEST(SpscQueueTest, EarlyDestruction) {
 	ASSERT_EQ(destructs_called, 100);
 }
 
+TEST(SpscQueueTest, Loop) {
+	const int num_msgs(128);
+	spsc_queue<int> q1, q2;
+
+	thread write_first([&q1, &q2, &num_msgs]() {
+		unique_ptr<int> ptr(new int(0));
+		spsc_reader<int> r(q2);
+		{
+			spsc_writer<int> w(q1);
+			for (int i = 0; i < num_msgs; ++i) {
+				ASSERT_TRUE(w.push(move(ptr)));
+				ASSERT_TRUE(r.pop(ptr));
+				++(*ptr);
+			}
+		}
+		ASSERT_TRUE(ptr != nullptr);
+		ASSERT_EQ(num_msgs * 2, *ptr);
+		ASSERT_FALSE(r.pop(ptr));
+	});
+
+	thread read_first([&q1, &q2, &num_msgs]() {
+		unique_ptr<int> ptr;
+		spsc_reader<int> r(q1);
+		{
+			spsc_writer<int> w(q2);
+			for (int i = 0; i < num_msgs; ++i) {
+				ASSERT_TRUE(r.pop(ptr));
+				++(*ptr);
+				ASSERT_TRUE(w.push(move(ptr)));
+			}
+		}
+		ASSERT_FALSE(r.pop(ptr));
+	});
+
+	write_first.join();
+	read_first.join();
+}
+
